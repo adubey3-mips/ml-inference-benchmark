@@ -12,7 +12,7 @@ Status legend:
 
 | #    | Spreadsheet name                          | Architecture     | Target quant         | Input shape       | Source URL | Format found | SHA256 | Status | Notes |
 |------|-------------------------------------------|------------------|----------------------|-------------------|------------|--------------|--------|--------|-------|
-| 11.1 | ResNet50 w8a8 224×224                     | ResNet50         | w8a8 (int8/int8)     | 1×224×224×3       |            |              |        | TBD    |       |
+| 11.1 | ResNet50 w8a8 224×224                     | ResNet50         | w8a8 (int8/int8)     | 1×224×224×3       |  https://huggingface.co/qualcomm/ResNet50          |TFLITE w8a8 (Qualcomm AI Hub, QAIRT 2.45)              |158ca1bd97b26e62c43ad0bd2f6a71e63d4342574c0e25ba7b996383d9cf1a76         |Sourced    |Smoke-tested on board, ~166ms with 2t+XNNPACK       |
 | 11.2 | MobileNetV2 w8a8 224×224                  | MobileNetV2      | w8a8 (int8/int8)     | 1×224×224×3       |            |              |        | TBD    |       |
 | 11.3 | MobileNetV2 w8a16 224×224                 | MobileNetV2      | w8a16 (int8/int16)   | 1×224×224×3       |            |              |        | TBD    |       |
 | 11.4 | MobileNetV2 w8a16_mixed_int16 224×224     | MobileNetV2      | w8a16 mixed int16    | 1×224×224×3       |            |              |        | TBD    |       |
@@ -25,9 +25,15 @@ Status legend:
 
 ## Per-model investigation log
 
-Use this section for free-form notes during sourcing — failed leads, conversion attempts, conversations with mentor, etc. Promote distilled facts up to the table.
-
 ### 11.1 ResNet50 w8a8
+- Downloaded: <05/20/2026> from https://huggingface.co/qualcomm/ResNet50
+- File: resnet50-tflite-w8a8.zip (21M zipped, 26.3M extracted)
+- SHA256: 158ca1bd97b26e62c43ad0bd2f6a71e63d4342574c0e25ba7b996383d9cf1a76
+- Auxiliary files preserved in models/aux/resnet50_w8a8/ (metadata.json, labels.txt — ImageNet 1000 classes)
+- Inspect: input uint8 [1,224,224,3] scale=1/255 zp=0; output uint8 [1,1000] scale=0.164 zp=51
+- No custom ops; XNNPACK delegate applied cleanly on Ubuntu and on board
+- Smoke test (2 threads, XNNPACK, 3+7 iters): avg 165.7ms, std 0.5ms, init 205ms
+- Model is fully sourced and validated.
 
 ### 11.2 MobileNetV2 w8a8
 

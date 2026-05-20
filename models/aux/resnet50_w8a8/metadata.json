@@ -1,0 +1,52 @@
+{
+    "model_id": "resnet50",
+    "model_name": "ResNet50",
+    "runtime": "tflite",
+    "precision": "w8a8",
+    "tool_versions": {
+        "qairt": "2.45.0.260326154327",
+        "litert": "1.4.3"
+    },
+    "model_files": {
+        "resnet50.tflite": {
+            "inputs": {
+                "image_tensor": {
+                    "shape": [
+                        1,
+                        224,
+                        224,
+                        3
+                    ],
+                    "dtype": "uint8",
+                    "quantization_parameters": {
+                        "scale": 0.003921568859368563,
+                        "zero_point": 0
+                    },
+                    "io_type": "image",
+                    "image_metadata": {},
+                    "value_range": [
+                        0.0,
+                        1.0
+                    ]
+                }
+            },
+            "outputs": {
+                "class_logits": {
+                    "shape": [
+                        1,
+                        1000
+                    ],
+                    "dtype": "uint8",
+                    "quantization_parameters": {
+                        "scale": 0.16464029252529144,
+                        "zero_point": 51
+                    },
+                    "labels_file": "imagenet_labels.txt"
+                }
+            }
+        }
+    },
+    "supplementary_files": {
+        "labels.txt": "Mapping of model prediction indices -> string labels."
+    }
+}
