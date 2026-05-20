@@ -10,10 +10,10 @@ Status legend:
 
 ## Triage table
 
-| #    | Spreadsheet name                          | Architecture     | Target quant         | Input shape       | Source URL | Format found | SHA256 | Status | Notes |
+| #    | Model Name                          | Architecture     | Target quant         | Input shape       | Source URL | Format found | SHA256 | Status | Notes |
 |------|-------------------------------------------|------------------|----------------------|-------------------|------------|--------------|--------|--------|-------|
 | 11.1 | ResNet50 w8a8 224×224                     | ResNet50         | w8a8 (int8/int8)     | 1×224×224×3       |  https://huggingface.co/qualcomm/ResNet50          |TFLITE w8a8 (Qualcomm AI Hub, QAIRT 2.45)              |158ca1bd97b26e62c43ad0bd2f6a71e63d4342574c0e25ba7b996383d9cf1a76         |Sourced    |Smoke-tested on board, ~166ms with 2t+XNNPACK       |
-| 11.2 | MobileNetV2 w8a8 224×224                  | MobileNetV2      | w8a8 (int8/int8)     | 1×224×224×3       |            |              |        | TBD    |       |
+| 11.2 | MobileNetV2 w8a8 224×224                  | MobileNetV2      | w8a8 (uint8/uint8)    | 1×224×224×3       |https://huggingface.co/qualcomm/MobileNet-v2            |TFLITE w8a8 (Qualcomm AI Hub, QAIRT 2.45)              | ce69c99c2b30       |Sourced    |Smoke-tested on board, ~33ms with 2t+XNNPACK       |
 | 11.3 | MobileNetV2 w8a16 224×224                 | MobileNetV2      | w8a16 (int8/int16)   | 1×224×224×3       |            |              |        | TBD    |       |
 | 11.4 | MobileNetV2 w8a16_mixed_int16 224×224     | MobileNetV2      | w8a16 mixed int16    | 1×224×224×3       |            |              |        | TBD    |       |
 | 11.5 | ViT-Base                                  | ViT-Base/16      | (spec unclear — confirm) | 1×224×224×3   |            |              |        | TBD    | Spreadsheet doesn't list quant — ask mentor |
@@ -36,6 +36,15 @@ Status legend:
 - Model is fully sourced and validated.
 
 ### 11.2 MobileNetV2 w8a8
+- Downloaded: <05/20/2026> from https://huggingface.co/qualcomm/MobileNet-v2
+- File: mobilenet_v2-tflite-w8a8.zip (3.3M zipped, 4.0M extracted)
+- SHA256: ce69c99c2b307d45b03c1bd5ccdd3ee8b66e9cf704c087c6db76d78340c90d71
+- Aux files: models/aux/mobilenetv2_w8a8/ (metadata.json, labels.txt — same ImageNet 1000 labels)
+- Inspect: input uint8 [1,224,224,3] scale=1/255 zp=0; output uint8 [1,1000] scale=0.171 zp=63
+- No custom ops; XNNPACK applied with 36 delegate kernels (depthwise-separable architecture splits heavily)
+- Smoke test (2t XNNPACK, 15+31 iters): avg 33.2ms, std 105μs, init 40ms
+- Note: page listed model size as "w8a16: 4.39 MB" but file is uint8/uint8 = w8a8; treating as page typo
+- Status: Sourced and validated.
 
 ### 11.3 MobileNetV2 w8a16
 
