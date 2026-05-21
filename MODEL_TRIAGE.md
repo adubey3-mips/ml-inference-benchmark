@@ -14,8 +14,8 @@ Status legend:
 |------|-------------------------------------------|------------------|----------------------|-------------------|------------|--------------|--------|--------|-------|
 | 11.1 | ResNet50 w8a8 224×224                     | ResNet50         | w8a8 (int8/int8)     | 1×224×224×3       |  https://huggingface.co/qualcomm/ResNet50          |TFLITE w8a8 (Qualcomm AI Hub, QAIRT 2.45)              |158ca1bd97b26e62c43ad0bd2f6a71e63d4342574c0e25ba7b996383d9cf1a76         |Sourced    |Smoke-tested on board, ~166ms with 2t+XNNPACK       |
 | 11.2 | MobileNetV2 w8a8 224×224                  | MobileNetV2      | w8a8 (uint8/uint8)    | 1×224×224×3       |https://huggingface.co/qualcomm/MobileNet-v2            |TFLITE w8a8 (Qualcomm AI Hub, QAIRT 2.45)              | ce69c99c2b307d45b03c1bd5ccdd3ee8b66e9cf704c087c6db76d78340c90d71       |Sourced    |Smoke-tested on board, ~33ms with 2t+XNNPACK       |
-| 11.3 | MobileNetV2 w8a16 224×224                 | MobileNetV2      | w8a16 (int8/int16)   | 1×224×224×3       |https://huggingface.co/qualcomm/MobileNet-v2            | ONNX/QNN_DLC w8a16 only; TFLite w8a16 not pre-exported              |  -      | Needs conversion    |TFLite w8a16 not in Qualcomm pre-exports. Options: (1) qai-hub-models Python export tool — requires Qualcomm AI Hub account (free, public), risk of non-universal ops; (2) self-convert from float MobileNetV2 via TFLite converter with int16 activation target_spec; (3) substitute w8a8 and note in spreadsheet. Decide after triage of remaining rows.       |
-| 11.4 | MobileNetV2 w8a16_mixed_int16 224×224     | MobileNetV2      | w8a16 mixed int16    | 1×224×224×3       |            |              |        | TBD    |       |
+| 11.3 | MobileNetV2 w8a16 224×224                 | MobileNetV2      | w8a16 (int8/int16)   | 1×224×224×3       |https://huggingface.co/qualcomm/MobileNet-v2            | ONNX/QNN_DLC w8a16 only; TFLite w8a16 not pre-exported              |  —      | Needs conversion    |TFLite w8a16 not in Qualcomm pre-exports. Options: (1) qai-hub-models Python export tool — requires Qualcomm AI Hub account (free, public), risk of non-universal ops; (2) self-convert from float MobileNetV2 via TFLite converter with int16 activation target_spec; (3) substitute w8a8 and note in spreadsheet. Decide after triage of remaining rows.       |
+| 11.4 | MobileNetV2 w8a16_mixed_int16 224×224     | MobileNetV2      | w8a16 mixed int16    | 1×224×224×3       |https://huggingface.co/qualcomm/MobileNet-v2            |ONNX/QNN_DLC w8a16_mixed only; TFLite not pre-exported              |—        |Needs conversion    |Same situation as 11.3. Mixed-int16 is Qualcomm-specific quant recipe (selective int16 on sensitive layers). Available via qai-hub-models Python export with --quantize w8a16_mixed_int16. Defer decision until full triage complete.        |
 | 11.5 | ViT-Base                                  | ViT-Base/16      | (spec unclear — confirm) | 1×224×224×3   |            |              |        | TBD    | Spreadsheet doesn't list quant — ask mentor |
 | 11.6 | BEVDet MobileNetV2 w8a16_mixed_fp16       | BEVDet (MNv2 backbone) | w8a16 mixed fp16 | 1×6×3×256×704     |            |              |        | TBD    | Multi-camera input — fps definition needs decision |
 | 11.7 | DeepLabV3-Plus-MobileNet w8a8             | DeepLabV3+ (MNv2) | w8a8 (int8/int8)    | (confirm — typically 1×513×513×3 or 1×257×257×3) | |  |        | TBD    | Confirm input shape with mentor |
@@ -47,8 +47,21 @@ Status legend:
 - Status: Sourced and validated.
 
 ### 11.3 MobileNetV2 w8a16
+- Qualcomm HF page lists w8a16 only for ONNX and QNN_DLC, not TFLite.
+- TFLite w8a16 obtainable via `qai-hub-models` Python export with --quantize w8a16
+  (requires free Qualcomm AI Hub account; cloud-based compilation; risk of non-universal ops on i.MX93).
+- Alternative: self-convert from float MobileNetV2 using TFLite converter
+  (target_spec.supported_ops = TFLITE_BUILTINS_INT8 + activation int16, representative dataset).
+- Decision deferred until full triage complete to allow batched conversion strategy.
 
 ### 11.4 MobileNetV2 w8a16_mixed_int16
+- Qualcomm HF page lists w8a16_mixed for ONNX and QNN_DLC only, not TFLite.
+- "Mixed int16" = selective int16 activations on sensitive layers (typically first/last, residual adds);
+  rest stay int8. Qualcomm-specific recipe.
+- Same sourcing options as row 11.3: qai-hub-models export tool, or self-convert.
+- Self-conversion is harder than vanilla w8a16 — needs per-layer activation type assignment,
+  which standard TFLite converter does not directly support. Likely requires qai-hub-models.
+- Decision deferred until full triage complete.
 
 ### 11.5 ViT-Base
 
