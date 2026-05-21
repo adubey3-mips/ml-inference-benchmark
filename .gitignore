@@ -1,1 +1,3 @@
 .venv/
+# Model binaries — track by SHA256 in MODEL_TRIAGE.md, not in git
+models/*.tflite
