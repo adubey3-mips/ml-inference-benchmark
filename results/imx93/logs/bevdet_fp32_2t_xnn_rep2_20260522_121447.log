@@ -1,0 +1,27 @@
+INFO: STARTING!
+INFO: Log parameter values verbosely: [0]
+INFO: Min num runs: [50]
+INFO: Min runs duration (seconds): [1]
+INFO: Max runs duration (seconds): [10000]
+INFO: Num threads: [2]
+INFO: Min warmup runs: [5]
+INFO: Graph: [/mnt/models/bevdet_fp32.tflite]
+INFO: Signature to run: []
+INFO: #threads used for CPU inference: [2]
+INFO: #threads used for CPU inference: [2]
+INFO: Use xnnpack: [1]
+INFO: Loaded model /mnt/models/bevdet_fp32.tflite
+INFO: Created TensorFlow Lite XNNPACK delegate for CPU.
+INFO: XNNPACK delegate created.
+INFO: Explicitly applied XNNPACK delegate, and the model graph will be partially executed by the delegate w/ 10 delegate kernels.
+INFO: The input model file size (MB): 187.239
+INFO: Initialized session in 1266.52ms.
+INFO: Running benchmark for at least 5 iterations and at least 0.5 seconds but terminate if exceeding 10000 seconds.
+INFO: count=5 first=31304300 curr=30737978 min=30583653 max=31304300 avg=3.08045e+07 std=263549 p5=30583653 median=30737978 p95=31304300
+
+INFO: Running benchmark for at least 50 iterations and at least 1 seconds but terminate if exceeding 10000 seconds.
+INFO: count=50 first=30457248 curr=30493870 min=30429706 max=30963531 avg=3.06642e+07 std=136378 p5=30457248 median=30700589 p95=30877131
+
+INFO: Inference timings in us: Init: 1266523, First inference: 31304300, Warmup (avg): 3.08045e+07, Inference (avg): 3.06642e+07
+INFO: Note: as the benchmark tool itself affects memory footprint, the following is only APPROXIMATE to the actual memory footprint of the model at runtime. Take the information at your discretion.
+INFO: Memory footprint delta from the start of the tool (MB): init=343.012 overall=1423.3

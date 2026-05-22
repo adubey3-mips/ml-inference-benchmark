@@ -72,3 +72,26 @@ Note: rep 1 was ~1% faster than reps 2-3, correlated with thermal creep
 threshold so result stands, but worth noting for fp32 workloads.
 
 ---
+## 11.6 BEVDet fp32 (deviation: spec was w8a16_mixed_fp16)
+
+| Rep | Median (ms) | Thermal pre/post (C) | Log |
+|---|---|---|---|
+| 1 | 30471.20 | 43.9 / 53.9 | `bevdet_fp32_2t_xnn_rep1_20260522_114615.log` |
+| 2 | 30700.59 | 47.9 / 55.4 | `bevdet_fp32_2t_xnn_rep2_20260522_121447.log` |
+| 3 | 30444.64 | 48.9 / 55.4 | `bevdet_fp32_2t_xnn_rep3_20260522_124327.log` |
+
+**Median-of-medians: 30471.20 ms / 0.03 fps per scene (0.20 fps per camera)** (std 0.46% across reps)
+
+Notes:
+- Spreadsheet specified w8a16_mixed_fp16; Qualcomm only exports w8a8_mixed_fp16
+  and only as ONNX (not TFLite). Using TFLite float as approved fallback.
+  Mentor confirmed the quant label is not significant for this row.
+- Model has 5 inputs (image `[1, 18, 256, 704]` = 6 cameras × 3 channels
+  concatenated, plus 4 calibration matrices) and 6 outputs.
+- Inputs were synthetic (TFLite default zero/random fill); inference time is
+  data-independent for this graph topology.
+- Memory peak 1423 MB on 1942 MB board (~73% used). No swap engaged.
+- Pre-cool of ~10 min before this run; thermals plateaued at 55.4 C across
+  reps 2-3 with no throttling signal.
+
+---
