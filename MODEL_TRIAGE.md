@@ -76,20 +76,66 @@ Status legend:
 - Status: Sourced and validated.
 
 ### 11.6 BEVDet
+- Downloaded: <05/21/26> from https://huggingface.co/qualcomm/BEVDet
+- File: bevdet-tflite-float.zip (158M zipped, 179M extracted)
+- SHA256: 9dd9c29d18c5f2436e7e6a89a089fbe44ad791edc0e2e0eaadeddd6522805807
+- Aux: models/aux/bevdet_fp32/metadata.json (no labels.txt — detection model, not classifier)
+- Multi-input model: 5 inputs total
+  - image [1, 18, 256, 704] fp32 (6 cameras × 3 RGB channels concatenated)
+  - sensor2keyegos [1, 6, 4, 4], inv_intrins [1, 6, 3, 3], inv_post_rots [1, 6, 3, 3], post_trans [1, 6, 1, 3]
+- 6 outputs: reg, height, dim, rot, vel, heatmap (all 1×*×128×128 fp32)
+- No custom ops; XNNPACK applied with 10 delegate kernels
+- Smoke test (2t XNNPACK, 1+3 iters): avg 30.57s (~0.033 scenes/s or ~0.20 cam-frames/s),
+  std 20ms (0.07%), init 949ms
+- Memory: 1420MB peak (~70% of 2GB) — fit but tight
+- Quant deviation: target was w8a16_mixed_fp16 (TFLite); only float available from Qualcomm.
 
 ### 11.7 DeepLabV3-Plus-MobileNet w8a8
+- Downloaded: <05/21/26> from https://huggingface.co/qualcomm/DeepLabV3-Plus-MobileNet
+- File: deeplabv3_plus_mobilenet-tflite-w8a8.zip (5.1M zipped, 6.3M extracted)
+- SHA256: 4296b534a2cf054cfae2bf79d1c5ad9e206b64ff3095f384841aee91a0e25eb8
+- Aux: models/aux/deeplabv3plus_mobilenet_w8a8/ (metadata.json, labels.txt — 21 VOC classes)
+- Inspect: input uint8 [1,520,520,3] scale=1/255 zp=0; output uint8 [1,520,520]
+  (argmax internal — class indices, no class channel)
+- IMPORTANT: input is 520×520, not the 513×513 the HF page advertises (likely 8-aligned pad)
+- No custom ops; XNNPACK with 35 delegate kernels
+- Smoke test (2t XNNPACK, NFS, 1+3 iters): avg 1,440ms (~0.69 fps), std 235μs (0.016%), init 135ms
+- Memory: 65MB peak — comfortable
+- Page typo: listed model size as "w8a16: 6.67 MB" but it's w8a8 (consistent with prior pages)
+- Note: Cortex-A55 latency dominated by spatial activations (520² vs 224²) more than param count.
+- Status: Sourced and validated.
 
 ### 11.8 DeepLabV3-Plus-MobileNet w8a16
+- Qualcomm HF page lists w8a16 only for ONNX and QNN_DLC, not TFLite.
+- Same situation as rows 11.3 and 11.4. Conversion options:
+  (1) qai-hub-models export with --quantize w8a16 (mentor approved — free Qualcomm AI Hub account)
+  (2) self-convert from float DeepLabV3+ MobileNet
+  (3) substitute w8a8 (already have from 11.7) and note in spreadsheet
+- Status: Needs conversion. Deferred until after Phase 1 formal benchmarks complete.
 
 ### 11.9 ResNet101 w8a8
+- Downloaded: <05/21/26> from https://huggingface.co/qualcomm/ResNet101
+- File: resnet101-tflite-w8a8.zip (37M zipped, 44M extracted)
+- SHA256: 5237460259347f850d5d89f2d4097b02900860c2fc74bc0b93a8b15a4de0661f
+- Aux: models/aux/resnet101_w8a8/ (metadata.json, labels.txt — ImageNet 1000)
+- Inspect: input uint8 [1,224,224,3] scale=1/255 zp=0; output uint8 [1,1000] scale=0.147 zp=51
+- No custom ops; XNNPACK applied with 1 delegate kernel (whole graph delegated)
+- Smoke test (2t XNNPACK, NFS, 2+4 iters): avg 313ms (~3.2 fps), std 710μs (0.23%), init 803ms
+- Memory: 116MB peak
+- Init time high (803ms) — likely first-pass NFS fault-in; expected to drop on re-run
+- Param count vs ResNet50: 1.74× more params, but 1.89× slower wall-clock (depth penalty)
+- Status: Sourced and validated.
 
 ### 11.10 ViT-Tiny
+- Qualcomm AI Hub: ViT-Base only, no ViT-Tiny variant.
+- HF model search for "vit-tiny tflite" and tflite library tag: no community TFLite found.
+- Reference PyTorch weights: WinKawaks/vit-tiny-patch16-224 (most-used HF mirror)
+  or timm's vit_tiny_patch16_224.
+- Conversion candidates:
+  - ai-edge-torch (Google) — PyTorch → TFLite, current-recommended path for ViT-class models.
+  - timm + onnx + onnx2tflite — older path, more steps, may have op-coverage issues.
+- Status: Needs conversion. No pre-exported source available.
 
-## Open questions for mentor
-
-- DeepLabV3+ input resolution — spreadsheet doesn't list it. Confirm.
-- BEVDet "fps" — should reported value be scenes/sec or per-camera-frames/sec (6× scenes)?
-- For models we cannot source or convert in reasonable time, is "could not source — see notes" acceptable in the spreadsheet cell, or should we substitute a nearest-equivalent model?
 
 ## Verification protocol (applied per sourced model)
 
