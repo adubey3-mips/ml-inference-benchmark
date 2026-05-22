@@ -1,0 +1,27 @@
+INFO: STARTING!
+INFO: Log parameter values verbosely: [0]
+INFO: Min num runs: [50]
+INFO: Min runs duration (seconds): [1]
+INFO: Max runs duration (seconds): [10000]
+INFO: Num threads: [2]
+INFO: Min warmup runs: [5]
+INFO: Graph: [/mnt/models/deeplabv3plus_mobilenet_w8a8.tflite]
+INFO: Signature to run: []
+INFO: #threads used for CPU inference: [2]
+INFO: #threads used for CPU inference: [2]
+INFO: Use xnnpack: [1]
+INFO: Loaded model /mnt/models/deeplabv3plus_mobilenet_w8a8.tflite
+INFO: Created TensorFlow Lite XNNPACK delegate for CPU.
+INFO: XNNPACK delegate created.
+INFO: Explicitly applied XNNPACK delegate, and the model graph will be partially executed by the delegate w/ 35 delegate kernels.
+INFO: The input model file size (MB): 6.33824
+INFO: Initialized session in 58.212ms.
+INFO: Running benchmark for at least 5 iterations and at least 0.5 seconds but terminate if exceeding 10000 seconds.
+INFO: count=5 first=1516347 curr=1454046 min=1454046 max=1516347 avg=1.46915e+06 std=23691 p5=1454046 median=1459206 p95=1516347
+
+INFO: Running benchmark for at least 50 iterations and at least 1 seconds but terminate if exceeding 10000 seconds.
+INFO: count=50 first=1469960 curr=1457066 min=1447312 max=1469960 avg=1.45639e+06 std=3717 p5=1451269 median=1456570 p95=1463010
+
+INFO: Inference timings in us: Init: 58212, First inference: 1516347, Warmup (avg): 1.46915e+06, Inference (avg): 1.45639e+06
+INFO: Note: as the benchmark tool itself affects memory footprint, the following is only APPROXIMATE to the actual memory footprint of the model at runtime. Take the information at your discretion.
+INFO: Memory footprint delta from the start of the tool (MB): init=15.168 overall=65.6484

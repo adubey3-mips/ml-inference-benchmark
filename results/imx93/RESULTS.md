@@ -46,3 +46,29 @@ Raw logs: `results/imx93/logs/`
 **Median-of-medians: 314.24 ms / 3.18 fps** (std 0.20% across reps)
 
 ---
+## 11.7 DeepLabV3-Plus-MobileNet w8a8
+
+| Rep | Median (ms) | Thermal pre/post (C) | Log |
+|---|---|---|---|
+| 1 | 1465.58 | 41.9 / 49.9 | `deeplabv3plus_mobilenet_w8a8_2t_xnn_rep1_20260522_110147.log` |
+| 2 | 1456.57 | 44.4 / 51.4 | `deeplabv3plus_mobilenet_w8a8_2t_xnn_rep2_20260522_110339.log` |
+| 3 | 1459.73 | 45.4 / 51.9 | `deeplabv3plus_mobilenet_w8a8_2t_xnn_rep3_20260522_110530.log` |
+
+**Median-of-medians: 1459.73 ms / 0.69 fps** (std 0.31% across reps)
+
+---
+## 11.5 ViT-Base fp32
+
+| Rep | Median (ms) | Thermal pre/post (C) | Log |
+|---|---|---|---|
+| 1 | 3317.69 | 44.4 / 52.9 | `vit_base_fp32_2t_xnn_rep1_20260522_110917.log` |
+| 2 | 3351.13 | 46.9 / 53.9 | `vit_base_fp32_2t_xnn_rep2_20260522_111255.log` |
+| 3 | 3350.04 | 47.9 / 55.4 | `vit_base_fp32_2t_xnn_rep3_20260522_111631.log` |
+
+**Median-of-medians: 3350.04 ms / 0.30 fps** (std 0.57% across reps)
+
+Note: rep 1 was ~1% faster than reps 2-3, correlated with thermal creep
+(pre-rep temp climbed 44.4 → 46.9 → 47.9 °C across reps). Within 1% std
+threshold so result stands, but worth noting for fp32 workloads.
+
+---
