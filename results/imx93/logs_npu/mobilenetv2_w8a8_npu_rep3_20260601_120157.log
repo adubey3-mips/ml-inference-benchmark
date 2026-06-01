@@ -1,0 +1,37 @@
+INFO: STARTING!
+INFO: Log parameter values verbosely: [0]
+INFO: Min num runs: [50]
+INFO: Min runs duration (seconds): [1]
+INFO: Max runs duration (seconds): [10000]
+INFO: Num threads: [2]
+INFO: Min warmup runs: [5]
+INFO: Graph: [/mnt/models/mobilenetv2_w8a8_vela.tflite]
+INFO: Signature to run: []
+INFO: #threads used for CPU inference: [2]
+INFO: #threads used for CPU inference: [2]
+INFO: External delegate path: [/usr/lib/libethosu_delegate.so]
+INFO: Loaded model /mnt/models/mobilenetv2_w8a8_vela.tflite
+INFO: Ethosu delegate: device_name set to /dev/ethosu0.
+INFO: Ethosu delegate: cache_file_path set to .
+INFO: Ethosu delegate: timeout set to 60000000000.
+INFO: Ethosu delegate: enable_cycle_counter set to 0.
+INFO: Ethosu delegate: enable_profiling set to 0.
+INFO: Ethosu delegate: profiling_buffer_size set to 2048.
+INFO: Ethosu delegate: pmu_event0 set to 0.
+INFO: Ethosu delegate: pmu_event1 set to 0.
+INFO: Ethosu delegate: pmu_event2 set to 0.
+INFO: Ethosu delegate: pmu_event3 set to 0.
+INFO: EXTERNAL delegate created.
+INFO: EthosuDelegate: 1 nodes delegated out of 1 nodes with 1 partitions.
+INFO: Explicitly applied EXTERNAL delegate, and the model graph will be completely executed by the delegate.
+INFO: The input model file size (MB): 3.75106
+INFO: Initialized session in 38.667ms.
+INFO: Running benchmark for at least 5 iterations and at least 0.5 seconds but terminate if exceeding 10000 seconds.
+INFO: count=82 first=6177 curr=6066 min=6046 max=6177 avg=6068.88 std=14 p5=6056 median=6067 p95=6082
+
+INFO: Running benchmark for at least 50 iterations and at least 1 seconds but terminate if exceeding 10000 seconds.
+INFO: count=164 first=6076 curr=6072 min=6046 max=6128 avg=6065.93 std=9 p5=6054 median=6065 p95=6080
+
+INFO: Inference timings in us: Init: 38667, First inference: 6177, Warmup (avg): 6068.88, Inference (avg): 6065.93
+INFO: Note: as the benchmark tool itself affects memory footprint, the following is only APPROXIMATE to the actual memory footprint of the model at runtime. Take the information at your discretion.
+INFO: Memory footprint delta from the start of the tool (MB): init=7.60547 overall=7.73047

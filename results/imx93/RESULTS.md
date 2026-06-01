@@ -95,3 +95,48 @@ Notes:
   reps 2-3 with no throttling signal.
 
 ---
+## NPU (Ethos-U65) results
+
+**Runtime:** TFLite 2.19.0 with `libethosu_delegate.so`, models compiled with Vela 4.3.0 (Ethos_U65_256, Ethos_U65_High_End system config, Dedicated_Sram_384KB memory mode)
+**Config:** 2 host threads, Ethos-U delegate, 5 warmup + 50 timed iterations, 3 reps with 30s cooldowns
+**BSP:** PD26.1.0 with True's `imx93-phycore-npu.dtso` patch (NPU memory region shifted to `0xC0000000`)
+
+---
+
+### 11.2 MobileNetV2 w8a8 (NPU)
+
+| Rep | Median (ms) | Thermal pre/post (C) | Log |
+|---|---|---|---|
+| 1 | 6.07 | 43.4 / 43.9 | `mobilenetv2_w8a8_npu_rep1_20260601_120051.log` |
+| 2 | 6.08 | 43.4 / 44.4 | `mobilenetv2_w8a8_npu_rep2_20260601_120125.log` |
+| 3 | 6.07 | 43.4 / 44.4 | `mobilenetv2_w8a8_npu_rep3_20260601_120157.log` |
+
+**Median-of-medians: 6.07 ms / 164.88 fps** (std 0.12% across reps)
+CPU vs NPU speedup: 33.08 / 6.07 = **5.45×**
+
+---
+### 11.1 ResNet50 w8a8 (NPU)
+
+| Rep | Median (ms) | Thermal pre/post (C) | Log |
+|---|---|---|---|
+| 1 | 27.93 | 43.9 / 44.4 | `resnet50_w8a8_npu_rep1_20260601_120520.log` |
+| 2 | 27.93 | 43.9 / 44.9 | `resnet50_w8a8_npu_rep2_20260601_120553.log` |
+| 3 | 27.93 | 43.9 / 44.4 | `resnet50_w8a8_npu_rep3_20260601_120626.log` |
+
+**Median-of-medians: 27.93 ms / 35.81 fps** (std 0.01% across reps)
+CPU vs NPU speedup: 165.18 / 27.93 = **5.91×**
+
+---
+### 11.9 ResNet101 w8a8 (NPU)
+
+| Rep | Median (ms) | Thermal pre/post (C) | Log |
+|---|---|---|---|
+| 1 | 47.48 | 44.4 / 45.4 | `resnet101_w8a8_npu_rep1_20260601_122213.log` |
+| 2 | 47.48 | 44.4 / 45.4 | `resnet101_w8a8_npu_rep2_20260601_122248.log` |
+| 3 | 47.48 | 44.4 / 45.4 | `resnet101_w8a8_npu_rep3_20260601_122322.log` |
+
+**Median-of-medians: 47.48 ms / 21.06 fps** (std 0.01% across reps)
+CPU vs NPU speedup: 314.24 / 47.48 = **6.62×**
+
+---
+
